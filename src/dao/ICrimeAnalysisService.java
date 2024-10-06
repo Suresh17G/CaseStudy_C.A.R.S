@@ -24,7 +24,7 @@ public interface ICrimeAnalysisService {
     Reports generateIncidentReport(Incidents incident);
 
     // Create a new case and associate it with incidents
-    Cases createCase(String caseDescription, Collection<Incidents> incidents);
+    Cases createCase(int caseID,String caseDescription, int incidentid);
 
     // Get details of a specific case
     Cases getCaseDetails(int caseId);
