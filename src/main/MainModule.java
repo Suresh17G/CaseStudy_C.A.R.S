@@ -5,17 +5,22 @@ import dao.ICrimeAnalysisService;
 import entity.Cases;
 import entity.Incidents;
 import entity.Reports;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+
 
 public class MainModule {
 
-	 static Scanner scanner = new Scanner(System.in);
+
+    static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) throws ClassNotFoundException {
         ICrimeAnalysisService service= new CrimeAnalysisServiceImpl();
         System.out.println("Welcome to Crime Analysis and Reporting System\n");
 
         while (true) {
-        	System.out.println();
+            System.out.println();
             System.out .println("1. Create Incident");
             System.out.println("2. Update Incident Status");
             System.out.println("3. Get Incidents in Date Range");
@@ -67,17 +72,20 @@ public class MainModule {
         }
 
     }
-    private static void createIncident (ICrimeAnalysisService service) {
+    private static void createIncident(ICrimeAnalysisService service) {
         Incidents incident = new Incidents();
         System.out.print("Enter incident ID: ");
         incident.setIncidentID(scanner.nextInt());
+        scanner.nextLine(); // Consume the newline character
         System.out.print("Enter incident type: ");
-        incident.setIncidentType(scanner.next());
+        incident.setIncidentType(scanner.nextLine());
         System.out.print("Enter incident date (yyyy-MM-dd): ");
-        String incidentDateStr = scanner.next();
+        String incidentDateStr = scanner.nextLine();
         try {
-            Date incidentDate = new Date(incidentDateStr);
-            incident.setIncidentDate(incidentDate);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate incidentDate = LocalDate.parse(incidentDateStr, formatter);
+            java.sql.Date sqlDate = java.sql.Date.valueOf(incidentDate);
+            incident.setIncidentDate(sqlDate);
         } catch (Exception e) {
             System.out.println("Invalid date format. Please use yyyy-MM-dd.");
             return;
@@ -87,7 +95,7 @@ public class MainModule {
         System.out.print("Enter description: ");
         incident.setDescription(scanner.nextLine());
         System.out.print("Enter status: ");
-        incident.setStatus(scanner.nextLine());
+        incident.setStatus(scanner.next());
         System.out.print("Enter victim ID: ");
         incident.setVictimID(scanner.nextInt());
         scanner.nextLine(); // Consume the newline character
@@ -118,13 +126,17 @@ public class MainModule {
 
     private static void getIncidentsInDateRange(ICrimeAnalysisService service) {
         System.out.print("Enter start date (yyyy-MM-dd): ");
-        String startDateStr = scanner.nextLine();
+        String startDateStr = scanner.next();
         System.out.print("Enter end date (yyyy-MM-dd): ");
-        String endDateStr = scanner.nextLine();
+        String endDateStr = scanner.next();
+
         try {
-            Date startDate = new Date(startDateStr);
-            Date endDate = new Date(endDateStr);
-            Collection<Incidents> incidents = service.getIncidentsInDateRange(startDate, endDate);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate startDate = LocalDate.parse(startDateStr, formatter);
+            LocalDate endDate = LocalDate.parse(endDateStr, formatter);
+            java.sql.Date sqlStartDate = java.sql.Date.valueOf(startDate);
+            java.sql.Date sqlEndDate = java.sql.Date.valueOf(endDate);
+            Collection<Incidents> incidents = service.getIncidentsInDateRange(sqlStartDate,sqlEndDate);
 
             if (incidents.isEmpty()) {
                 System.out.println("No incidents found in the given date range.");
@@ -148,7 +160,7 @@ public class MainModule {
 
     private static void searchIncidents(ICrimeAnalysisService service) {
         System.out.print("Enter search keyword: ");
-        String keyword = scanner.nextLine();
+        String keyword = scanner.next();
 
         Collection<Incidents> incidents = service.searchIncidents(keyword);
 
@@ -156,6 +168,7 @@ public class MainModule {
             System.out.println("No incidents found matching the search keyword.");
         } else {
             for (Incidents incident : incidents) {
+            	System.out.println();
                 System.out.println("Incident ID: " + incident.getIncidentID());
                 System.out.println("Incident Type: " + incident.getIncidentType());
                 System.out.println("Incident Date: " + incident.getIncidentDate());
@@ -180,7 +193,8 @@ public class MainModule {
         Reports report = service.generateIncidentReport(incident);
 
         if (report != null) {
-            System.out.println("Incident Report:");
+            System.out.println("\nIncident Report:");
+            System.out.println();
             System.out.println("Report ID: " + report.getReportID());
             System.out.println("Incident ID: " + report.getIncidentID());
             System.out.println("Reporting Officer: " + report.getReportingOfficer());
@@ -197,6 +211,7 @@ public class MainModule {
 
         System.out.print("Enter CaseID: ");
         int caseID = scanner.nextInt();
+        scanner.nextLine();
         System.out.print("Enter case description: ");
         String caseDescription = scanner.nextLine();
         System.out.print("Enter incident ID : ");
@@ -205,7 +220,7 @@ public class MainModule {
 
         if (caseObj != null) {
             System.out.println("Case created successfully.");
-            System.out.println("Case ID: " + caseObj.getCaseID());
+            System.out.println("\nCase ID: " + caseObj.getCaseID());
             System.out.println("Case Description: " + caseObj.getCaseDescription());
             System.out.println("Incident IDs: "+caseObj.getIncidentID());
         } else {
@@ -221,7 +236,8 @@ public class MainModule {
         Cases caseObj = service.getCaseDetails(caseId);
 
         if (caseObj != null) {
-            System.out.println("Case Details:");
+            System.out.println("\nCase Details:");
+            System.out.println();
             System.out.println("Case ID: " + caseObj.getCaseID());
             System.out.println("Case Description: " + caseObj.getCaseDescription());
             System.out.println("Incident ID: " + caseObj.getIncidentID());
@@ -234,11 +250,15 @@ public class MainModule {
         System.out.print("Enter case ID: ");
         int caseId = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character
+        System.out.println("Enter Incident ID: ");
+        int incidentID = scanner.nextInt();
+        scanner.nextLine();
         System.out.print("Enter new case description: ");
         String caseDescription = scanner.nextLine();
 
         Cases caseObj = new Cases();
         caseObj.setCaseID(caseId);
+        caseObj.setIncidentID(incidentID);
         caseObj.setCaseDescription(caseDescription);
 
         if (service.updateCaseDetails(caseObj)) {
@@ -248,7 +268,7 @@ public class MainModule {
         }
     }
 
-    private static void getAllCases(ICrimeAnalysisService service) {
+    private static void getAllCases(ICrimeAnalysisService service) throws ClassNotFoundException {
         Collection<Cases> cases = service.getAllCases();
 
         if (cases.isEmpty()) {
