@@ -13,6 +13,7 @@ import util.DBConnection;
 import entity.Cases;
 import entity.Incidents;
 import entity.Reports;
+import exception.IncidentNumberNotFoundException;
 
 public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 
@@ -48,8 +49,16 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setString(1, status);
 			ps.setInt(2, incidentId);
-			return ps.executeUpdate() > 0;
-		} catch (SQLException e) {
+			int output=ps.executeUpdate();
+			if(output==0) {
+				throw new IncidentNumberNotFoundException();
+			}
+			return output > 0;
+		} catch (IncidentNumberNotFoundException e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			return false;
 		}
