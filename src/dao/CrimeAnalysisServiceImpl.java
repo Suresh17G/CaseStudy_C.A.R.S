@@ -143,7 +143,7 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 			if (rs.next()) {
 
 				String caseDescription = rs.getString("CaseDescription");
-				int incidentID = rs.getInt("Caseid");
+				int incidentID = rs.getInt("incidentID");
 
 				return new Cases(caseId, caseDescription, incidentID);
 			}
@@ -182,6 +182,15 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 			System.out.println(e.getMessage());
 		}
 		return cases;
+	}
+
+	@Override
+	public void closeConnection() throws SQLException {
+		try {
+            if (connection != null) connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 	}
 
 }

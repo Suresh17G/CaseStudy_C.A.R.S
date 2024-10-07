@@ -4,6 +4,8 @@ package dao;
 import entity.Cases;
 import entity.Incidents;
 import entity.Reports;
+
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 
@@ -34,4 +36,6 @@ public interface ICrimeAnalysisService {
 
     // Get a list of all cases
     Collection<Cases> getAllCases();
+    
+    void closeConnection() throws SQLException;
 }

@@ -6,6 +6,7 @@ import entity.Cases;
 import entity.Incidents;
 import entity.Reports;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -15,7 +16,7 @@ public class MainModule {
 
 
     static Scanner scanner = new Scanner(System.in);
-    public static void main(String[] args) throws ClassNotFoundException {
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
         ICrimeAnalysisService service= new CrimeAnalysisServiceImpl();
         System.out.println("Welcome to Crime Analysis and Reporting System\n");
 
@@ -65,6 +66,7 @@ public class MainModule {
                     break;
                 case 10:
                     System.out.println("Exiting...");
+                    service.closeConnection();
                     return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
