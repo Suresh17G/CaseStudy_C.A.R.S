@@ -46,6 +46,8 @@ class UpdateIncidentStatusTest {
         // Verify interactions with the mock objects
         verify(mockPreparedStatement, times(1)).setString(1, "Closed");
         verify(mockPreparedStatement, times(1)).setInt(2, 1);
+        
+        verify(mockPreparedStatement, times(1)).executeUpdate();
     }
 
     @Test
@@ -62,5 +64,7 @@ class UpdateIncidentStatusTest {
         // Verify interactions with the mock objects
         verify(mockPreparedStatement, times(1)).setString(1, "Closed");
         verify(mockPreparedStatement, times(1)).setInt(2, 999);
+        
+        verify(mockPreparedStatement, times(1)).executeUpdate();
     }
 }

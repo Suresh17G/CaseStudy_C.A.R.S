@@ -55,6 +55,9 @@ class CreateIncidentTest {
         verify(mockPreparedStatement, times(1)).setString(6, incident.getStatus());
         verify(mockPreparedStatement, times(1)).setInt(7, incident.getVictimID());
         verify(mockPreparedStatement, times(1)).setInt(8, incident.getSuspectID());
+        
+        verify(mockPreparedStatement, times(1)).executeUpdate();
+        
     }
 }
 
