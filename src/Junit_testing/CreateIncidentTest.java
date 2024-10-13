@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import dao.CrimeAnalysisServiceImpl;
 import entity.Incidents;
+import exception.DatabaseException;
 
 class CreateIncidentTest {
 
@@ -35,7 +36,7 @@ class CreateIncidentTest {
     }
 
     @Test
-    void testCreateIncident() throws SQLException {
+    void testCreateIncident() throws SQLException, DatabaseException {
         // Arrange
         Incidents incident = new Incidents(1, "Robbery", new Date(), "123 Main St", "Stolen cash", "Open", 1, 1);
         when(mockPreparedStatement.executeUpdate()).thenReturn(1); // Simulate 1 row inserted

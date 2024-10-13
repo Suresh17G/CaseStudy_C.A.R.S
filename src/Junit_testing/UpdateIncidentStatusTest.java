@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import dao.CrimeAnalysisServiceImpl;
+import exception.DatabaseException;
 
 class UpdateIncidentStatusTest {
 
@@ -33,7 +34,7 @@ class UpdateIncidentStatusTest {
     }
 
     @Test
-    void testUpdateIncidentStatus() throws SQLException {
+    void testUpdateIncidentStatus() throws SQLException, DatabaseException {
         // Arrange
         when(mockPreparedStatement.executeUpdate()).thenReturn(1); // Simulate successful update
 
@@ -51,7 +52,7 @@ class UpdateIncidentStatusTest {
     }
 
     @Test
-    void testInvalidStatusUpdate() throws SQLException {
+    void testInvalidStatusUpdate() throws SQLException, DatabaseException {
         // Arrange
         when(mockPreparedStatement.executeUpdate()).thenReturn(0); // Simulate no rows updated
 

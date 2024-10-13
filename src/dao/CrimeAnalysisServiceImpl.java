@@ -13,6 +13,8 @@ import util.DBConnection;
 import entity.Cases;
 import entity.Incidents;
 import entity.Reports;
+import exception.CaseNotFoundException;
+import exception.DatabaseException;
 import exception.IncidentNumberNotFoundException;
 
 public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
@@ -24,7 +26,7 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 	}
 
 	@Override
-	public boolean createIncident(Incidents incident) {
+	public boolean createIncident(Incidents incident) throws DatabaseException {
 		// TODO Auto-generated method stub
 		String sql = "INSERT INTO Incidents (incidentID,IncidentType, IncidentDate, Location, Description, Status, VictimID, SuspectID) VALUES (?,?, ?, ?, ?, ?, ?, ?)";
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -38,13 +40,13 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 			ps.setInt(8, incident.getSuspectID());
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			return false;
+			throw new DatabaseException("Error creating incident: " + e.getMessage());
+			
 		}
 	}
 
 	@Override
-	public boolean updateIncidentStatus(String status, int incidentId) {
+	public boolean updateIncidentStatus(String status, int incidentId) throws DatabaseException {
 		String sql = "UPDATE Incidents SET Status = ? WHERE IncidentID = ?";
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setString(1, status);
@@ -59,13 +61,12 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 			return false;
 		}
 		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			return false;
+			throw new DatabaseException("Error updating incident status: " + e.getMessage());
 		}
 	}
 
 	@Override
-	public Collection<Incidents> getIncidentsInDateRange(Date startDate, Date endDate) {
+	public Collection<Incidents> getIncidentsInDateRange(Date startDate, Date endDate) throws DatabaseException {
 		List<Incidents> incidents = new ArrayList<>();
 		String sql = "SELECT * FROM Incidents WHERE IncidentDate BETWEEN ? AND ?";
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -78,13 +79,13 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 						rs.getString("Status"), rs.getInt("VictimID"), rs.getInt("SuspectID")));
 			}
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			 throw new DatabaseException("Error fetching incidents: " + e.getMessage());
 		}
 		return incidents;
 	}
 
 	@Override
-	public Collection<Incidents> searchIncidents(String criteria) {
+	public Collection<Incidents> searchIncidents(String criteria) throws DatabaseException {
 
 		Collection<Incidents> incidents = new ArrayList<>();
 		String sql = "SELECT * FROM Incidents WHERE IncidentType LIKE ?";
@@ -97,13 +98,13 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 						rs.getString("Status"), rs.getInt("VictimID"), rs.getInt("SuspectID")));
 			}
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			throw new DatabaseException("Error searching incidents: " + e.getMessage());
 		}
 		return incidents;
 	}
 
 	@Override
-	public Reports generateIncidentReport(Incidents incident) {
+	public Reports generateIncidentReport(Incidents incident) throws IncidentNumberNotFoundException, DatabaseException {
 
 		String sql = "SELECT * FROM Reports WHERE incidentID = ?";
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -119,14 +120,16 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 				return new Reports(reportID, incident.getIncidentID(), reportOfficer, reportDate, ReportDetails,
 						Status);
 			}
+			else {
+                throw new IncidentNumberNotFoundException();
+            }
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			throw new DatabaseException("Error generating incident report: " + e.getMessage());
 		}
-		return null;
 	}
 
 	@Override
-	public Cases createCase(int caseid, String caseDescription, int incidentid) {
+	public Cases createCase(int caseid, String caseDescription, int incidentid) throws DatabaseException {
 		String sql = "INSERT INTO Cases (caseid,CaseDescription, incidentID) VALUES (?,?,?)";
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setInt(1, caseid);
@@ -138,13 +141,13 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 				return new Cases(caseid, caseDescription, incidentid);
 			}
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			throw new DatabaseException("Error creating case: " + e.getMessage());
 		}
 		return null;
 	}
 
 	@Override
-	public Cases getCaseDetails(int caseId) {
+	public Cases getCaseDetails(int caseId) throws CaseNotFoundException,DatabaseException {
 		String sql = "SELECT * FROM Cases WHERE CaseID = ?";
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setInt(1, caseId);
@@ -156,14 +159,16 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 
 				return new Cases(caseId, caseDescription, incidentID);
 			}
+			else {
+                throw new CaseNotFoundException();
+            }
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			throw new DatabaseException("Error fetching case details: " + e.getMessage());
 		}
-		return null;
 	}
 
 	@Override
-	public boolean updateCaseDetails(Cases caseDetails) {
+	public boolean updateCaseDetails(Cases caseDetails) throws DatabaseException {
 		String sql = "UPDATE Cases SET CaseDescription = ?,incidentid= ? WHERE CaseID = ?";
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setString(1, caseDetails.getCaseDescription());
@@ -171,13 +176,12 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 			ps.setInt(3, caseDetails.getCaseID());
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			return false;
+			throw new DatabaseException("Error updating case details: " + e.getMessage());
 		}
 	}
 
 	@Override
-	public Collection<Cases> getAllCases() {
+	public Collection<Cases> getAllCases() throws DatabaseException {
 		Collection<Cases> cases = new ArrayList<>();
 		String sql = "SELECT * FROM Cases";
 		try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
@@ -188,7 +192,7 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 				cases.add(new Cases(caseId, caseDescription, incidentid));
 			}
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			throw new DatabaseException("Error fetching all cases: " + e.getMessage());
 		}
 		return cases;
 	}
@@ -198,7 +202,7 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 		try {
             if (connection != null) connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+        	throw new SQLException("Error closing connection: " + e.getMessage(), e);
         }
 	}
 

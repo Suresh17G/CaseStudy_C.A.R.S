@@ -5,6 +5,9 @@ import dao.ICrimeAnalysisService;
 import entity.Cases;
 import entity.Incidents;
 import entity.Reports;
+import exception.CaseNotFoundException;
+import exception.DatabaseException;
+import exception.IncidentNumberNotFoundException;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -108,11 +111,15 @@ public class MainModule {
         incident.setSuspectID(scanner.nextInt());
         scanner.nextLine(); // Consume the newline character
 
-        if (service.createIncident(incident)) {
-            System.out.println("Incident created successfully.");
-        } else {
-            System.out.println("Failed to create incident.");
-        }
+        try {
+			if (service.createIncident(incident)) {
+			    System.out.println("Incident created successfully.");
+			} else {
+			    System.out.println("Failed to create incident.");
+			}
+		} catch (DatabaseException e) {
+		System.out.println(e);
+		}
     }
 
     private static void updateIncidentStatus(ICrimeAnalysisService service) {
@@ -122,11 +129,15 @@ public class MainModule {
         System.out.print("Enter new status: ");
         String status = scanner.nextLine();
 
-        if (service.updateIncidentStatus(status, incidentId)) {
-            System.out.println("Incident status updated successfully.");
-        } else {
-            System.out.println("Failed to update incident status.");
-        }
+        try {
+			if (service.updateIncidentStatus(status, incidentId)) {
+			    System.out.println("Incident status updated successfully.");
+			} else {
+			    System.out.println("Failed to update incident status.");
+			}
+		} catch (DatabaseException e) {
+			System.out.println(e);
+		}
     }
 
     private static void getIncidentsInDateRange(ICrimeAnalysisService service) {
@@ -167,7 +178,12 @@ public class MainModule {
         System.out.print("Enter Incident type to search: ");
         String keyword = scanner.next();
 
-        Collection<Incidents> incidents = service.searchIncidents(keyword);
+        Collection<Incidents> incidents = null;
+		try {
+			incidents = service.searchIncidents(keyword);
+		} catch (DatabaseException e) {
+			System.out.println(e);
+		}
 
         if (incidents.isEmpty()) {
             System.out.println("No incidents found matching the search keyword.");
@@ -195,7 +211,12 @@ public class MainModule {
         Incidents incident = new Incidents();
         incident.setIncidentID(incidentId);
 
-        Reports report = service.generateIncidentReport(incident);
+        Reports report = null;
+		try {
+			report = service.generateIncidentReport(incident);
+		} catch (IncidentNumberNotFoundException | DatabaseException e) {
+			System.out.println(e);
+		}
 
         if (report != null) {
             System.out.println("\nIncident Report:");
@@ -221,7 +242,12 @@ public class MainModule {
         String caseDescription = scanner.nextLine();
         System.out.print("Enter incident ID : ");
         int incidentId = scanner.nextInt();
-        Cases caseObj = service.createCase(caseID,caseDescription, incidentId);
+        Cases caseObj = null;
+		try {
+			caseObj = service.createCase(caseID,caseDescription, incidentId);
+		} catch (DatabaseException e) {
+			System.out.println(e);
+		}
 
         if (caseObj != null) {
             System.out.println("Case created successfully.");
@@ -238,7 +264,12 @@ public class MainModule {
         int caseId = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character
 
-        Cases caseObj = service.getCaseDetails(caseId);
+        Cases caseObj = null;
+		try {
+			caseObj = service.getCaseDetails(caseId);
+		} catch (CaseNotFoundException | DatabaseException e) {
+			System.out.println(e);
+		}
 
         if (caseObj != null) {
             System.out.println("\nCase Details:");
@@ -266,15 +297,24 @@ public class MainModule {
         caseObj.setIncidentID(incidentID);
         caseObj.setCaseDescription(caseDescription);
 
-        if (service.updateCaseDetails(caseObj)) {
-            System.out.println("Case details updated successfully.");
-        } else {
-            System.out.println("Failed to update case details.");
-        }
+        try {
+			if (service.updateCaseDetails(caseObj)) {
+			    System.out.println("Case details updated successfully.");
+			} else {
+			    System.out.println("Failed to update case details.");
+			}
+		} catch (DatabaseException e) {
+			System.out.println(e);
+		}
     }
 
     private static void getAllCases(ICrimeAnalysisService service) throws ClassNotFoundException {
-        Collection<Cases> cases = service.getAllCases();
+        Collection<Cases> cases = null;
+		try {
+			cases = service.getAllCases();
+		} catch (DatabaseException e) {
+			System.out.println(e);
+		}
 
         if (cases.isEmpty()) {
             System.out.println("No cases found.");
