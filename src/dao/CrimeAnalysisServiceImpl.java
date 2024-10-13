@@ -57,7 +57,7 @@ public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 			}
 			return output > 0;
 		} catch (IncidentNumberNotFoundException e) {
-			System.out.println(e.getMessage());
+			System.out.println(e);
 			return false;
 		}
 		catch (SQLException e) {
