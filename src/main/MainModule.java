@@ -19,7 +19,7 @@ public class MainModule {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         ICrimeAnalysisService service= new CrimeAnalysisServiceImpl();
         System.out.println("Welcome to Crime Analysis and Reporting System\n");
-
+        try {
         while (true) {
             System.out.println();
             System.out .println("1. Create Incident");
@@ -72,6 +72,9 @@ public class MainModule {
                     System.out.println("Invalid choice. Please try again.");
             }
         }
+    }catch(Exception e) {
+    	System.out.println("\nUnexpected Error: " + e + "\nExiting Crime Analysis and Reporting System!!");
+    }
 
     }
     private static void createIncident(ICrimeAnalysisService service) {
@@ -161,7 +164,7 @@ public class MainModule {
     }
 
     private static void searchIncidents(ICrimeAnalysisService service) {
-        System.out.print("Enter search keyword: ");
+        System.out.print("Enter Incident type to search: ");
         String keyword = scanner.next();
 
         Collection<Incidents> incidents = service.searchIncidents(keyword);
