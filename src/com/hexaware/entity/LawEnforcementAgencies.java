@@ -1,4 +1,4 @@
-package entity;
+package com.hexaware.entity;
 
 public class LawEnforcementAgencies {
     private int agencyID;

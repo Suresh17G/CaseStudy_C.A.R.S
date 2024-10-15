@@ -1,4 +1,4 @@
-package exception;
+package com.hexaware.exception;
 
 public class CaseNotFoundException extends Exception {
 	public CaseNotFoundException() {

@@ -1,4 +1,4 @@
-package dao;
+package com.hexaware.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,13 +9,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import util.DBConnection;
-import entity.Cases;
-import entity.Incidents;
-import entity.Reports;
-import exception.CaseNotFoundException;
-import exception.DatabaseException;
-import exception.IncidentNumberNotFoundException;
+import com.hexaware.entity.Cases;
+import com.hexaware.entity.Incidents;
+import com.hexaware.entity.Reports;
+import com.hexaware.exception.CaseNotFoundException;
+import com.hexaware.exception.DatabaseException;
+import com.hexaware.exception.IncidentNumberNotFoundException;
+import com.hexaware.util.DBConnection;
 
 public class CrimeAnalysisServiceImpl implements ICrimeAnalysisService {
 

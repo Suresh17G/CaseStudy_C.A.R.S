@@ -1,4 +1,4 @@
-package exception;
+package com.hexaware.exception;
 
 public class DatabaseException extends Exception {
 	public DatabaseException() {

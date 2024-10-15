@@ -1,23 +1,22 @@
-package entity;
+package com.hexaware.entity;
 
 import java.util.Date;
 
-public class Suspects {
-    private int suspectID;
+public class Victims {
+    private int victimID;
     private String firstName;
     private String lastName;
     private Date dateOfBirth;
     private String gender;
     private String contactInformation;
 
-
-    // constructor
-    public Suspects(){
+    // Constructor
+    public Victims(){
 
     }
 
-    public Suspects(int suspectID, String firstName, String lastName, Date dateOfBirth, String gender, String contactInformation) {
-        this.suspectID = suspectID;
+    public Victims(int victimID, String firstName, String lastName, Date dateOfBirth, String gender, String contactInformation) {
+        this.victimID = victimID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -26,12 +25,13 @@ public class Suspects {
     }
 
 
-    // getter and setters
-    public int getSuspectID() {
-        return suspectID;
+
+    // getters and setters
+    public int getVictimID() {
+        return victimID;
     }
-    public void setSuspectID(int suspectID) {
-        this.suspectID = suspectID;
+    public void setVictimID(int victimID) {
+        this.victimID = victimID;
     }
     public String getFirstName() {
         return firstName;
@@ -64,11 +64,9 @@ public class Suspects {
         this.contactInformation = contactInformation;
     }
 
-
     @Override
     public String toString() {
-        return "Suspects [suspectId=" + suspectID + ", firstName=" + firstName + ", lastName=" + lastName + ", dob="
-                + dateOfBirth + ", gender=" + gender + ", contactInformation=" + contactInformation + "]";
+        return "Victims [victimId=" + victimID + ", firstName=" + firstName + ", lastName=" + lastName + ", dob=" + dateOfBirth
+                + ", gender=" + gender + ", Contact Information" + contactInformation + "]";
     }
-
 }

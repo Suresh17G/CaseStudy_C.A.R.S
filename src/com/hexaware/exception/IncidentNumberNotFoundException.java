@@ -1,4 +1,4 @@
-package exception;
+package com.hexaware.exception;
 
 public class IncidentNumberNotFoundException extends Exception {
 	public IncidentNumberNotFoundException() {

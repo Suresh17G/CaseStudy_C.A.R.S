@@ -1,4 +1,4 @@
-package Junit_testing;
+package com.hexaware.Junit;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,9 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import dao.CrimeAnalysisServiceImpl;
-import entity.Incidents;
-import exception.DatabaseException;
+import com.hexaware.dao.CrimeAnalysisServiceImpl;
+import com.hexaware.entity.Incidents;
+import com.hexaware.exception.DatabaseException;
 
 class CreateIncidentTest {
 

@@ -1,4 +1,4 @@
-package entity;
+package com.hexaware.entity;
 
 import java.util.Date;
 

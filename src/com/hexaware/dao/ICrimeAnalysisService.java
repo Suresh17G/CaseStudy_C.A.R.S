@@ -1,16 +1,16 @@
-package dao;
+package com.hexaware.dao;
 
-
-import entity.Cases;
-import entity.Incidents;
-import entity.Reports;
-import exception.CaseNotFoundException;
-import exception.DatabaseException;
-import exception.IncidentNumberNotFoundException;
 
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
+
+import com.hexaware.entity.Cases;
+import com.hexaware.entity.Incidents;
+import com.hexaware.entity.Reports;
+import com.hexaware.exception.CaseNotFoundException;
+import com.hexaware.exception.DatabaseException;
+import com.hexaware.exception.IncidentNumberNotFoundException;
 
 public interface ICrimeAnalysisService {
     // Create a new incident
